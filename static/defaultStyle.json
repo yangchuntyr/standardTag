@@ -6,7 +6,9 @@
    "height":"200px",
   "text": "按钮",
 
-  "border": "solid 1px lightgrey",
+  "borderColor": "lightgrey",
+  "borderWidth":"1px",
+  "borderStyle": "solid",
 
   "display": "flex",
   "justifyContent": "center",

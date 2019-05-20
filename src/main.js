@@ -4,7 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 
-import VueDraggableResizable from 'vue-draggable-resizable-gorkys'
+// import VueDraggableResizable from 'vue-draggable-resizable-gorkys'
 
 Vue.config.productionTip = true;
 

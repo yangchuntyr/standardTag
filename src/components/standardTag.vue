@@ -166,6 +166,7 @@ watch: {
     onActivated() {
       console.log("onActivated", arguments);
       this.handles = handlesParam;
+      this.$emit("selectedEvent",{...this.allStyle});
       //保存属性参数
     },
     onDeactivated() {
