@@ -12,7 +12,9 @@
       @activated="onActivated"
       @deactivated="onDeactivated"
       @dragstop="onDragstop"
-    >{{defautlOhterStyle&&defautlOhterStyle.text}}</VueDraggableResizable>
+    >
+      <label v-text="defautlOhterStyle&&defautlOhterStyle.text"></label>
+    </VueDraggableResizable>
   </div>
 </template>
 <script>
@@ -20,7 +22,8 @@ import VueDraggableResizable from "vue-draggable-resizable";
 import "vue-draggable-resizable/dist/VueDraggableResizable.css";
 import axios from "axios";
 import styleVal from "../js/styleVal";
-
+import commonEvent from "../js/eventCtr";
+var event = commonEvent.getEventInstance();
 const handlesParam = ["tl", "tm", "tr", "mr", "br", "bm", "bl", "ml"];
 
 export default {
@@ -90,7 +93,18 @@ export default {
   },
   mounted() {
     this.loadDefualtStyle();
+    event.listonEvent(
+      event.editStyleChangeName,
+      function(va) {
+        console.log(event.editStyleChangeName + "事件触发  子控件", va);
+        if(va.obj===this)
+        {
+            this.setStyle(styleVal.addPx({ ...va.style}));
+        }
+      }.bind(this)
+    );
   },
+
   methods: {
     loadDefualtStyle() {
       axios
@@ -104,12 +118,17 @@ export default {
         .catch(function(error) {
           console.log("请求样式json文件错误=", error);
         });
-
-      this.$emit("initStyle", { ...this.allStyle });
     },
     //***获得最新样式的副本 */
     getStyleCopy() {
       return { ...this.allStyle };
+    },
+
+    triggerStyleChangeEvent(){
+  event.triggerEvent(event.childStyleChangeName, {
+          style: this.allStyle,
+          obj: this
+        });
     },
 
     //设置样式，可以只设置部分样式
@@ -176,9 +195,9 @@ export default {
         top
       });
 
-      if (this.styleChangeEvent) {
-        this.styleChangeEvent(this.allStyle);
-      }
+   this.triggerStyleChangeEvent();
+     
+      
     },
     onResizstop() {
       console.log("调整大小结束", arguments);
@@ -202,17 +221,17 @@ export default {
         height
       });
 
-      if (this.styleChangeEvent) {
-        this.styleChangeEvent(this.allStyle);
-      }
+   
+       this.triggerStyleChangeEvent();
+     
     },
     childclick() {
       this.$emit("clickEvent");
     },
     onActivated() {
-      console.log("onActivated", arguments);
       this.handles = handlesParam;
       this.$emit("selectedEvent", this.allStyle, this);
+        this.triggerStyleChangeEvent();
       //保存属性参数
     },
     onDeactivated() {

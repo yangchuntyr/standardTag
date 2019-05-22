@@ -1,12 +1,18 @@
 <template>
-  <div class="hello ttt">
-    <standardTag
+  <div class="hello ttt" @click="cltest">
+    <standardTag @selectedEvent="selectedEvent" parentSelect=".ttt"/>
+
+    <standardTag @selectedEvent="selectedEvent" parentSelect=".ttt"/>
+    <standardTag @selectedEvent="selectedEvent" parentSelect=".ttt"/>
+    <!-- 
+     <standardTag
       :styleChangeEvent="childStyleChangeEvent"
       :styleFromParent="styleFromParent"
       parentSelect=".ttt"
-    />
+    />-->
+
     <!--     <standardTag   parentSelect=".ttt"  v-on:clickEvent="responeClick"/> -->
-    <styleEdit :props-style="styleFromParent"></styleEdit>
+    <styleEdit :props-style="styleToEdit"></styleEdit>
   </div>
 </template>
 
@@ -15,11 +21,15 @@ import standardTag from "@/Components/standardTag";
 import styleEdit from "./styleEdit";
 import styleDeal from "../js/styleVal.js";
 
+import commonEvent from "../js/eventCtr";
+var event = commonEvent.getEventInstance();
+
 export default {
   name: "HelloWorld",
   data() {
     return {
-      styleFromParent: null
+      styleFromParent: {},
+      styleToEdit: {}
     };
   },
   components: {
@@ -28,26 +38,22 @@ export default {
   },
   mounted() {},
   methods: {
+    cltest() {
+      event.triggerEvent("on", { a: 33 });
+    },
     childStyleChangeEvent(val) {
-      // console.log("响应变化了 标准按钮样式发生变化");
-
-      // var tem2 = styleDeal.replacePx(val);
-      // console.log(
-      //   "响应变化中",
-
-      //   tem2
-      // );
-
-      // this.styleFromParent = tem2;
-      // console.log("响应变化后", this.styleFromParent);
-      styleDeal.replacePx(val).then((obj)=>{
-        console.log("响应变化中",obj);
-        this.styleFromParent = {...obj};
+      styleDeal.replacePx(val).then(obj => {
+        console.log("响应变化中", obj);
+        this.styleFromParent = { ...obj };
       });
-
-    }
+    },
+    selectedEvent(a, obj) {
+      console.log("我被选择");
+    },
+    childStyleChangeEvent2(val, obj) {}
   }
 };
+//:style="{backgroundImage:'url('+require('../assets/timg.jpg')+')'}"
 </script>
 
 
@@ -57,5 +63,8 @@ export default {
   height: 700px;
   border: #42b983 solid 1px;
   position: relative;
+  /* background-image:  url("../../static/timg.jpg");  
+   background-repeat:no-repeat;
+   background-size: 100% auto; */
 }
 </style>

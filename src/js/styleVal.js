@@ -13,7 +13,7 @@ class styleDeal {
       for(let  key in obj){
         if(this.specialNames.indexOf(key)>=0){
           obj[key] = (obj[key].toString()).replace(/px/g, "");
-          console.log(obj[key]);
+         
        }
       }
       console.log("替换对象之后是",obj);
