@@ -1,42 +1,50 @@
 <template>
   <div class="hello ttt">
-
-    <standardTag @selectedEvent="onSelectedEvent"  :styleFromParent="styleFromParent" att="45" parentSelect=".ttt" ref="first" v-on:clickEvent="responeClick"/>
-    <standardTag @selectedEvent="onSelectedEvent"  parentSelect=".ttt"  v-on:clickEvent="responeClick"/>
-    <styleEdit :propsStyle="selectStyle"></styleEdit>
-
+    <standardTag
+      :styleChangeEvent="childStyleChangeEvent"
+      :styleFromParent="styleFromParent"
+      parentSelect=".ttt"
+    />
+    <!--     <standardTag   parentSelect=".ttt"  v-on:clickEvent="responeClick"/> -->
+    <styleEdit :props-style="styleFromParent"></styleEdit>
   </div>
 </template>
 
 <script>
 import standardTag from "@/Components/standardTag";
-import styleEdit from "./styleEdit"
-import styleDeal from  "../js/styleVal.js"
+import styleEdit from "./styleEdit";
+import styleDeal from "../js/styleVal.js";
 
 export default {
   name: "HelloWorld",
   data() {
     return {
-      msg: "Welcome to Your Vue.js App",
-     styleFromParent:{top:30},
-     selectStyle:{}
+      styleFromParent: null
     };
   },
   components: {
     standardTag,
     styleEdit
   },
-     mounted() {
-      
-    },
+  mounted() {},
   methods: {
-  
-  onSelectedEvent(valS){
-   console.log("激活样式",valS);
-   this.selectStyle=styleDeal.replacePx( valS);
-  },
-    responeClick() {
-  
+    childStyleChangeEvent(val) {
+      // console.log("响应变化了 标准按钮样式发生变化");
+
+      // var tem2 = styleDeal.replacePx(val);
+      // console.log(
+      //   "响应变化中",
+
+      //   tem2
+      // );
+
+      // this.styleFromParent = tem2;
+      // console.log("响应变化后", this.styleFromParent);
+      styleDeal.replacePx(val).then((obj)=>{
+        console.log("响应变化中",obj);
+        this.styleFromParent = {...obj};
+      });
+
     }
   }
 };
@@ -44,7 +52,6 @@ export default {
 
 
 <style scoped>
-
 .hello {
   /* width: 400xp; */
   height: 700px;

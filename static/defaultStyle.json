@@ -6,7 +6,7 @@
    "height":"200px",
   "text": "按钮",
 
-  "borderColor": "lightgrey",
+  "borderColor": "#FF90EE",
   "borderWidth":"1px",
   "borderStyle": "solid",
 
@@ -15,9 +15,9 @@
   "alignItems": "center",
   "boxSizing": "border-box",
 
-  "backgroundColor": "lightgoldenrodyellow",
+  "backgroundColor": "#FFAFAD",
   "borderRadius": "5px",
-  "color": "red",
+  "color": "#ff0000",
   "fontSize": "30px",
   "fontWeight": "bold"
 }

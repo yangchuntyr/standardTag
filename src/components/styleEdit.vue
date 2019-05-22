@@ -16,36 +16,36 @@
       <div class="outerDiv">
         <span>字体颜色</span>
       
-             <input type="color" v-model="style.color"  value="#2D9900" placeholder="输入" >
+             <input type="color" v-model="propsStyle.color"  placeholder="输入" >
       </div>
     </div>
 
     <div>
       <div class="outerDiv">
         <span>宽(px)</span>
-        <input type="number" min="10" v-model="style.width" placeholder="输入">
+        <input type="number" min="10" v-model="propsStyle.width" placeholder="输入">
       </div>
 
       <div class="outerDiv">
         <span>高(px)</span>
-        <input type="number" min="0" v-model="style.height" placeholder="输入">
+        <input type="number" min="0" v-model="propsStyle.height" placeholder="输入">
       </div>
 
       <div class="outerDiv">
         <span>top(px)</span>
-        <input type="number" v-model="style.top" min="0" placeholder="输入">
+        <input type="number" v-model="propsStyle.top" min="0" placeholder="输入">
       </div>
 
       <div class="outerDiv">
         <span>left(px)</span>
-        <input type="number" v-model="style.left" min="0" placeholder="输入">
+        <input type="number" v-model="propsStyle.left" min="0" placeholder="输入">
       </div>
     </div>
 
     <div>
       <div class="outerDiv">
         <span>背景颜色</span>
-        <input type="color" v-model="style.backgroundColor"  value="#2D9900" placeholder="输入">
+        <input type="color" v-model="propsStyle.backgroundColor"  placeholder="输入">
       </div>
 
       <div class="outerDiv">
@@ -55,15 +55,15 @@
 
       <div class="outerDiv">
         <span>边框颜色</span>
-        <input type="color" v-model="style.borderColor" placeholder="输入">
+        <input type="color" v-model="propsStyle.borderColor" placeholder="输入">
       </div>
       <div class="outerDiv">
         <span>边框宽度(px)</span>
-        <input type="number" min="0" v-model="style.borderWidth" placeholder="输入">
+        <input type="number" min="0" v-model="propsStyle.borderWidth" placeholder="输入">
       </div>
       <div class="outerDiv">
         <span>圆角(px)</span>
-        <input type="number" v-model="style.borderRadius" min="0" placeholder="输入">
+        <input type="number" v-model="propsStyle.borderRadius" min="0" placeholder="输入">
       </div>
     </div>
 
@@ -77,24 +77,33 @@
 export default {
   data(){
     return {
-      style:{
-backgroundColor:"#ffffff"
-      }
+    
     }
   },
   props:{
     propsStyle:{
       type:Object,
-    
     }
   },
   mounted(){
-    this.style={...this.propsStyle} ;
+
+  },
+
+  watch: {
+    //父控件修改了子控件的样式要立即更新子控件的
+    propsStyle: {
+      handler: function(newV, oldV) {
+        console.log("样式编辑器样式属性被改变",newV);
+
+      },
+
+      deep: true
+    }
   },
   methods:{
     saveSytle(){
-      this.$emit("updateStyle",{...this.style})
-      console.log({...this.style})
+      // this.$emit("updateStyle",{...this.propsStyle})
+      console.log(this.propsStyle)
     }
   }
 };
