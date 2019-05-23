@@ -11,6 +11,7 @@ var tem= function() {
     this.childStyleChangeName="childStyleChange";
     //编辑框控件样式改变事件
     this.editStyleChangeName="editStyleChangeName";
+    this.dragEndName="dragEndName";
     this.listonEvent=function(eventName,fn) {
        
         this.event.$on(eventName,fn)

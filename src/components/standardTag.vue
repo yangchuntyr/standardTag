@@ -40,7 +40,8 @@ export default {
     },
     styleFromParent: {
       type: Object,
-      required: false
+      required: false,
+      default: null
     }
   },
 
@@ -50,8 +51,8 @@ export default {
       defultPostion: {
         top: 10,
         left: 10,
-        width: 200,
-        height: 200
+        width: 100,
+        height: 100
       },
       defautlOhterStyle: null,
       allStyle: {}
@@ -65,7 +66,6 @@ export default {
         var tem = styleVal.addPx({ ...newV });
         let isAllEquen = true;
         for (const key in tem) {
-          console.log(key, newV[key], this.allStyle[key]);
           if (newV[key] !== this.allStyle[key]) {
             isAllEquen = false;
             break;
@@ -78,41 +78,42 @@ export default {
           return;
         }
 
-        this.setStyle(styleVal.addPx({ ...newV }));
+      //  this.setStyle(styleVal.addPx({ ...newV }));
       },
 
       deep: true
     }
   },
   created() {},
-  updated() {
-    console.log("初步更新成功");
-    this.$nextTick(function() {
-      console.log("页面 全部 更新成功");
-    });
-  },
+  updated() {},
   mounted() {
+    console.log("父亲样式:", this.styleFromParent);
     this.loadDefualtStyle();
+  
     event.listonEvent(
       event.editStyleChangeName,
       function(va) {
         console.log(event.editStyleChangeName + "事件触发  子控件", va);
-        if(va.obj===this)
-        {
-            this.setStyle(styleVal.addPx({ ...va.style}));
+        if (va.obj === this) {
+          this.setStyle(styleVal.addPx({ ...va.style }));
         }
       }.bind(this)
     );
   },
 
   methods: {
-    loadDefualtStyle() {
-      axios
+     loadDefualtStyle() {
+    var tt=   axios
         .get("/static/defaultStyle.json")
         .then(
           function(response) {
             console.log("请求返回内容", response.data);
-            this.setStyle(response.data);
+            var temp={...response.data,...this.styleFromParent}
+            var dis=Math.floor(temp.width/2)
+            temp.left=(temp.left-dis)<0?10:temp.left-dis;
+            temp.top=(temp.top-dis)<0?10:temp.top-dis;
+            this.setStyle(temp);
+            
           }.bind(this)
         )
         .catch(function(error) {
@@ -124,11 +125,11 @@ export default {
       return { ...this.allStyle };
     },
 
-    triggerStyleChangeEvent(){
-  event.triggerEvent(event.childStyleChangeName, {
-          style: this.allStyle,
-          obj: this
-        });
+    triggerStyleChangeEvent() {
+      event.triggerEvent(event.childStyleChangeName, {
+        style: this.allStyle,
+        obj: this
+      });
     },
 
     //设置样式，可以只设置部分样式
@@ -195,9 +196,7 @@ export default {
         top
       });
 
-   this.triggerStyleChangeEvent();
-     
-      
+      this.triggerStyleChangeEvent();
     },
     onResizstop() {
       console.log("调整大小结束", arguments);
@@ -221,9 +220,7 @@ export default {
         height
       });
 
-   
-       this.triggerStyleChangeEvent();
-     
+      this.triggerStyleChangeEvent();
     },
     childclick() {
       this.$emit("clickEvent");
@@ -231,7 +228,7 @@ export default {
     onActivated() {
       this.handles = handlesParam;
       this.$emit("selectedEvent", this.allStyle, this);
-        this.triggerStyleChangeEvent();
+      this.triggerStyleChangeEvent();
       //保存属性参数
     },
     onDeactivated() {
