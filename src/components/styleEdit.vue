@@ -71,9 +71,14 @@
         <span>圆角(px)</span>
         <input type="number" v-model="Style.borderRadius" min="0" placeholder="输入">
       </div>
+
+      <div class="outerDiv">
+        <span>隐藏</span>
+        <input type="checkbox" v-model="Style.display" min="0" placeholder="输入">
+      </div>
     </div>
 
-    <div id="saveBtn" @click="saveSytle">保存</div>
+ 
   </div>
 </template>
 
@@ -109,6 +114,9 @@ export default {
         this.bindTarget = va.obj;
 
         rpxObj.replacePx(va.style).then(obj => {
+          if (obj.display == "none") {
+            obj.display = false;
+          }
           this.Style = Object.assign({}, this.Style, obj);
         });
       }.bind(this)
@@ -118,9 +126,11 @@ export default {
   watch: {
     Style: {
       handler: function(newV) {
+        var isShow = newV.display;
+        console.log("newV", newV);
         event.triggerEvent(event.editStyleChangeName, {
-          style: newV,
-          obj:this.bindTarget
+          style: { ...newV, ...{ display: isShow ? "flex" : "none" } },
+          obj: this.bindTarget
         });
       },
       deep: true
@@ -136,12 +146,18 @@ export default {
   },
   methods: {
     getFiles(val) {
-
-    
       //等待上传的文件
       this.waitingUpFile = val.target.files[0];
-      this.Style["backgroundImage"] =
-        "url(" + this.getObjectURL(val.target.files[0]) + ")";
+      if (this.Style.hasOwnProperty("backgroundImage")) {
+        this.Style["backgroundImage"] =
+          "url(" + this.getObjectURL(val.target.files[0]) + ")";
+      } else {
+        this.$set(
+          this.Style,
+          "backgroundImage",
+          "url(" + this.getObjectURL(val.target.files[0]) + ")"
+        );
+      }
     },
     //***获取文件地址 用来预览图片 */
     getObjectURL(file) {
@@ -185,10 +201,7 @@ export default {
         });
     },
 
-    saveSytle() {
-      console.log(this.propsStyle);
-      //  this.uploadFile("")
-    }
+ 
   }
 };
 </script>

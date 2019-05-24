@@ -3,7 +3,7 @@
     <leftBlock></leftBlock>
   <div>
      <div>(备注:此屏幕模拟的是iphone6s的屏幕大小 屏幕414*736)</div>
-  <hello/>
+  <phoneBox/>
   </div>
 
   <editStyle></editStyle>
@@ -12,13 +12,13 @@
 </template>
 
 <script>
-import hello from './components/HelloWorld'
+import phoneBox from './components/phoneBox'
 import editStyle from './components/styleEdit'
 import leftBlock from "./components/leftBlock"
 export default {
   name: 'App',
   components:{
-    hello,editStyle,leftBlock
+    phoneBox,editStyle,leftBlock
   }
 }
 </script>

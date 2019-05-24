@@ -1,4 +1,7 @@
 import Vue from 'vue';
+
+//使用vue 的$on 和 $emit 在整个项目里传递事件和响应事件
+
 console.log("开始运行")
 var tem= function() {
     

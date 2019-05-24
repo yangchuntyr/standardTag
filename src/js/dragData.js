@@ -1,3 +1,4 @@
+//拖动的数据
 export default class DragData{
     constructor(){
         //是否拖到了正确的位置

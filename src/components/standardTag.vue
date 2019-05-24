@@ -20,15 +20,19 @@
 <script>
 import VueDraggableResizable from "vue-draggable-resizable";
 import "vue-draggable-resizable/dist/VueDraggableResizable.css";
-import axios from "axios";
+// import axios from "axios";
 import styleVal from "../js/styleVal";
 import commonEvent from "../js/eventCtr";
+import ProId from "../js/proId";
 var event = commonEvent.getEventInstance();
 const handlesParam = ["tl", "tm", "tr", "mr", "br", "bm", "bl", "ml"];
 
 export default {
   name: "standardTag",
   props: {
+    pageIdProp: {
+      type: Number
+    },
     styleChangeEvent: {
       type: Function,
       default: null
@@ -47,49 +51,70 @@ export default {
 
   data: function() {
     return {
+      idData: {
+        id: ProId.getUniqueId(), //组件id
+        type: "", //组件类型
+        pageId: "" //组件所在的页面id
+      },
       handles: [],
       defultPostion: {
-        top: 10,
-        left: 10,
+        top:
+          this.styleFromParent.top - 50 < 0
+            ? 10
+            : this.styleFromParent.top - 50,
+        left:
+          this.styleFromParent.left - 50 < 0
+            ? 10
+            : this.styleFromParent.left - 50,
         width: 100,
         height: 100
       },
-      defautlOhterStyle: null,
-      allStyle: {}
+      defautlOhterStyle: {},
+      //把位置样式 和 其他样式的值都保存在这里
+      allStyle: {
+        top:
+          this.styleFromParent.top - 50 < 0
+            ? 10
+            : this.styleFromParent.top - 50,
+        left:
+          this.styleFromParent.left - 50 < 0
+            ? 10
+            : this.styleFromParent.left - 50,
+        width: 100,
+        height: 100,
+        text: "",
+        borderColor: "#FF90EE",
+        borderWidth: "1px",
+        borderStyle: "solid",
+
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        boxSizing: "border-box",
+
+        backgroundColor: "#FFAFAD",
+        borderRadius: "5px",
+        color: "#ff0000",
+        fontSize: "30px",
+        fontWeight: "bold",
+
+        backgroundImage: "url('../../static/timg.jpg')",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "100% auto",
+        display: "flex"
+      }
     };
   },
-  watch: {
-    //父控件修改了子控件的样式要立即更新子控件的
-    styleFromParent: {
-      handler: function(newV, oldV) {
-        console.log("监控发生变化");
-        var tem = styleVal.addPx({ ...newV });
-        let isAllEquen = true;
-        for (const key in tem) {
-          if (newV[key] !== this.allStyle[key]) {
-            isAllEquen = false;
-            break;
-          }
-        }
-
-        console.log("isAllEquen", isAllEquen);
-        if (isAllEquen) {
-          console.log("样式前后没有变化 不设置样式", newV, this.allStyle);
-          return;
-        }
-
-      //  this.setStyle(styleVal.addPx({ ...newV }));
-      },
-
-      deep: true
-    }
+  watch: {},
+  created() {
+    console.log("组件Id=" + this.idData.id);
   },
-  created() {},
   updated() {},
   mounted() {
     console.log("父亲样式:", this.styleFromParent);
-    this.loadDefualtStyle();
-  
+
+    this.setStyle({ ...this.allStyle });
+
     event.listonEvent(
       event.editStyleChangeName,
       function(va) {
@@ -102,29 +127,6 @@ export default {
   },
 
   methods: {
-     loadDefualtStyle() {
-    var tt=   axios
-        .get("/static/defaultStyle.json")
-        .then(
-          function(response) {
-            console.log("请求返回内容", response.data);
-            var temp={...response.data,...this.styleFromParent}
-            var dis=Math.floor(temp.width/2)
-            temp.left=(temp.left-dis)<0?10:temp.left-dis;
-            temp.top=(temp.top-dis)<0?10:temp.top-dis;
-            this.setStyle(temp);
-            
-          }.bind(this)
-        )
-        .catch(function(error) {
-          console.log("请求样式json文件错误=", error);
-        });
-    },
-    //***获得最新样式的副本 */
-    getStyleCopy() {
-      return { ...this.allStyle };
-    },
-
     triggerStyleChangeEvent() {
       event.triggerEvent(event.childStyleChangeName, {
         style: this.allStyle,
@@ -151,9 +153,6 @@ export default {
         }
       }
 
-      //设置除定位以外的其他样式
-      // var defautlOhterStyle =  this.defautlOhterStyle || (this.defautlOhterStyle = {});
-
       var allStyle = this.allStyle || (this.allStyle = {});
       if (!this.defautlOhterStyle) {
         this.defautlOhterStyle = {};
@@ -166,8 +165,6 @@ export default {
           } else {
             this.$set(this.defautlOhterStyle, a, styleJsonObj[a]);
           }
-
-          //  defautlOhterStyle[a] = styleJsonObj[a];
         }
 
         allStyle[a] = styleJsonObj[a];
@@ -179,8 +176,19 @@ export default {
         this.defultPostion
       );
     },
-    saveStyleToJson(styleObject) {
       //写json文件提交
+    saveStyleToJson() {
+    
+      var jsonVal={
+        fileName:this.idData.type+"_"+this.idData.id+"_"+this.idData.pageId,//预览组件时根据json文件名称可以判断这份配置的对象位置
+        style:{...this.allStyle},
+        idData:{...this.idData},
+        screenWidth:414
+        //还要补充事件代码保存为json 
+        //屏幕适配办法 涉及到的大小单位都是px 保存设计时的屏幕宽度 在预览或运行时 获取运行环境屏幕宽度，
+        //根据runScreenWidth/designScreenWidth*json配置里的组件宽度  就等于实际运行时的组件宽度
+      }
+      
     },
 
     onDragstop() {
@@ -233,7 +241,6 @@ export default {
     },
     onDeactivated() {
       this.handles = [];
-      //保存属性参数
     }
   },
   components: {
@@ -248,16 +255,6 @@ export default {
   position: relative;
   border: solid lightblue 1px;
   border-radius: 3px;
-}
-
-.defautlOhterStyle {
-  border: solid 1px lightgrey;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-sizing: border-box;
-  background-color: lightgoldenrodyellow;
-  font-weight: bold;
 }
 </style>
 

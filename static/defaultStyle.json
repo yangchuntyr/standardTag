@@ -1,27 +1,28 @@
-
- {
-   "top":"100",
-   "left":"20",
-   "width":"100",
-   "height":"100",
-  "text": "",
-
-  "borderColor": "#FF90EE",
-  "borderWidth":"1px",
-  "borderStyle": "solid",
-
-  "display": "flex",
-  "justifyContent": "center",
-  "alignItems": "center",
-  "boxSizing": "border-box",
-
-  "backgroundColor": "#FFAFAD",
-  "borderRadius": "5px",
-  "color": "#ff0000",
-  "fontSize": "30px",
-  "fontWeight": "bold",
-  
-  "backgroundImage":  "url('../../static/timg.jpg')", 
-  "backgroundRepeat":"no-repeat",
-  "backgroundSize" : "100% auto"
+{
+  "type": "button",
+  "id": "button_123",
+   "screenWidth":"414",
+  "style": {
+    "top": "100px",
+    "left": "20px",
+    "width": "100px",
+    "height": "100px",
+    "text": "",
+    "borderColor": "#FF90EE",
+    "borderWidth": "1px",
+    "borderStyle": "solid",
+    "display": "flex",
+    "justifyContent": "center",
+    "alignItems": "center",
+    "boxSizing": "border-box",
+    "backgroundColor": "#FFAFAD",
+    "borderRadius": "5px",
+    "color": "#ff0000",
+    "fontSize": "30px",
+    "fontWeight": "bold",
+    "backgroundImage": "url('../../static/timg.jpg')",
+    "backgroundRepeat": "no-repeat",
+    "backgroundSize": "100% auto",
+    "display": "block"
+  }
 }
