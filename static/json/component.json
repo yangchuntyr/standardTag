@@ -1,7 +1,7 @@
 {
   "type": "button",
   "id": "button_123",
-   "screenWidth":"414",
+  
   "style": {
     "top": "100px",
     "left": "20px",
@@ -22,7 +22,7 @@
     "fontWeight": "bold",
     "backgroundImage": "url('../../static/timg.jpg')",
     "backgroundRepeat": "no-repeat",
-    "backgroundSize": "100% auto",
-    "display": "block"
+    "backgroundSize": "100% auto"
+
   }
 }

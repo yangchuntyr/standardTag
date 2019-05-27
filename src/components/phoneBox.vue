@@ -3,8 +3,9 @@
     <standardTag
       :ref="'child'+index"
       v-for="(item, index) in items"
-      :styleFromParent="item"
+      :styleFromParent="item" 
       :key="index"
+      :typeProp="item.type"
       @selectedEvent="selectedEvent"
       parentSelect=".parent"
       :pageIdProp="pageId"
@@ -18,15 +19,16 @@ import styleDeal from "../js/styleVal.js";
 import dragData from "../js/dragData";
 import commonEvent from "../js/eventCtr";
 import DragData from "../js/dragData";
-import ProId from "../js/proId"
+import ProId from "../js/proId";
+
 var event = commonEvent.getEventInstance();
 
 export default {
   name: "phoneBox",
   data() {
     return {
-      pageId:ProId.getUniqueId(),
-      items: [],
+      pageId: ProId.getUniqueId(),
+      items: [], //用来转载组件
       dragData: new DragData()
     };
   },
@@ -37,13 +39,10 @@ export default {
     event.listonEvent(event.dragEndName, val => this.dragEnd(val));
   },
   methods: {
-    
-
     isInBoxPhone(pt) {
       var boxPhone = document.getElementById("boxPhone");
       var left = boxPhone.offsetLeft;
       var top = boxPhone.offsetTop;
-     
 
       this.dragData.point.top = pt.y - top < 0 ? 60 : pt.y - top;
       this.dragData.point.left = pt.x - left < 0 ? 60 : pt.x - left;
@@ -61,27 +60,22 @@ export default {
     },
 
     dragEnd(val) {
-    
+      console.log("在手机屏幕上 拖动结束",{ ...this.dragData.point ,backgroundImage:val.ctrInfo.icon})
       this.dragData.isFitPlace = this.isInBoxPhone({
         x: val.x,
         y: val.y
       });
 
       if (this.dragData.isFitPlace) {
-    
-        switch (val.ctrType) {
-          case "button":
-            this.items.push({ ...this.dragData.point });
-            break;
-        }
-      } else {
+            this.items.push({ ...this.dragData.point,
+            backgroundImage:val.ctrInfo.icon,
+            type:val.ctrInfo.type });
       
+      } else {
       }
     },
 
-    dragover() {
-    
-    },
+    dragover() {},
 
     selectedEvent(a, obj) {}
   }
@@ -96,6 +90,7 @@ export default {
   height: 736px;
   border: #42b983 solid 1px;
   position: relative;
+
   /* background-image:  url("../../static/timg.jpg");  
    background-repeat:no-repeat;
    background-size: 100% auto; */

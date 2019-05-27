@@ -1,0 +1,12 @@
+{
+  "id": "button_123",
+  
+  "style": {
+    "backgroundImage": "url('../../static/timg.jpg')",
+    "backgroundRepeat": "no-repeat",
+    "backgroundSize": "100% auto"
+    
+  },
+
+  "componentFileNames":["button123.json","image123.json"]
+}

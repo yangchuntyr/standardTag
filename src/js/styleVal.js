@@ -16,7 +16,7 @@ class styleDeal {
          
        }
       }
-      console.log("替换对象之后是",obj);
+    
       resolve(obj);
     });
  
@@ -44,7 +44,7 @@ class styleDeal {
   addPx(styleDescription) {
     //要加加px的样式名称
     const names=[ "borderWidth", "fontSize", "borderRadius"];
-    console.log("待添加px对象",styleDescription)
+
      if(!styleDescription)
      return null;
     for (const iterator of names) {
@@ -52,7 +52,7 @@ class styleDeal {
         styleDescription[iterator] = styleDescription[iterator] + "px";
       }
     }
-    console.log("添加px 后",styleDescription)
+
     return styleDescription;
   }
 }

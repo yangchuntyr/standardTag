@@ -1,20 +1,45 @@
 <template>
   <div class="left">
-    <div @dragstart="start" draggable="true" @dragend="dragend">按钮1</div>
-    <div @dragstart="start" draggable="true" @dragend="dragend">按钮2</div>
+    <div class="title" draggable="true">元件库</div>
+    <div class="lib">
+      <div class="block" v-for="(item,index) in items" :key="index">
+        <div    @dragstart="start(index)" 
+        :style="{backgroundImage:'url('+item.icon+')'}"
+            draggable="true" 
+               class="darg"
+            @dragend="dragend(item,$event)">
+          <!-- <img
+            :src="item.icon"
+            alt="图片加载失败"
+            class="darg"
+         
+          > -->
+        </div>
+
+        <div class="tip" v-text="item.name"></div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
 import commonEvent from "../js/eventCtr";
+import componentsLib from "../../static/json/componentLib";
+console.log("componentsLib=", componentsLib);
+
 var event = commonEvent.getEventInstance();
 export default {
+  data() {
+    return {
+      items: componentsLib
+    };
+  },
   methods: {
     dragend() {
-      console.log("拖动结束", arguments);
+      console.log("拖动结束", { ...arguments });
       event.triggerEvent(event.dragEndName, {
-        ctrType: "button",
-        x: arguments["0"].clientX,
-        y: arguments["0"].clientY
+        ctrInfo: { ...arguments[0] },
+        x: arguments["1"].clientX,
+        y: arguments["1"].clientY
       });
     },
     start(a) {
@@ -26,13 +51,44 @@ export default {
 
 <style scoped>
 .left {
-  width: 200px;
+  width: 253px;
   height: 100%;
   border: solid lightcyan 1px;
 }
-.left > div {
-  width: 100px;
-  height: 100px;
-  border: solid 1px lightblue;
+
+.title {
+  width: 100%;
+  height: 55px;
+  text-align: center;
+  line-height: 55px;
+  border-bottom: solid 1px lightgray;
+}
+.lib {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  padding: 10px 10px;
+    flex-wrap: wrap;
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10px;
+  margin-bottom: 10px;
+
+}
+.darg {
+  width: 60px;
+  height: 60px;
+  background-size: 100% auto;
+  background-color: #F2F2F2;
+}
+
+div.tip {
+  color: #bfbfbf;
 }
 </style>

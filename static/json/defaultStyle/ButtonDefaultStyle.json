@@ -1,0 +1,21 @@
+{
+
+"width": "100px",
+"height": "100px",
+"text": "按钮",
+"borderColor": "#eeeeee",
+"borderWidth": "0px",
+"borderStyle": "solid",
+"display": "flex",
+"justifyContent": "center",
+"alignItems": "center",
+"boxSizing": "border-box",
+"backgroundColor": "#eeeeee",
+"borderRadius": "0px",
+"color": "#333333",
+"fontSize": "20px",
+"fontWeight": "normal",
+"backgroundImage": "",
+"backgroundRepeat": "no-repeat",
+"backgroundSize": "100% auto"
+}

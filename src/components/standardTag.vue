@@ -20,16 +20,40 @@
 <script>
 import VueDraggableResizable from "vue-draggable-resizable";
 import "vue-draggable-resizable/dist/VueDraggableResizable.css";
-// import axios from "axios";
+
 import styleVal from "../js/styleVal";
+import Http from "axios";
 import commonEvent from "../js/eventCtr";
 import ProId from "../js/proId";
 var event = commonEvent.getEventInstance();
 const handlesParam = ["tl", "tm", "tr", "mr", "br", "bm", "bl", "ml"];
+//控件类型对应的默认样式文件
+const TypeMapStyle = {
+  button: "ButtonDefaultStyle.json",
+  image: "ImageDefaultStyle.json",
+  input: "InputDefaultStyle.json"
+};
+
+const TypeMapW2 = {
+  button: "",
+  image: "",
+  input: ""
+};
+
+const TypeMapH2 = {
+  button: "ButtonDefaultStyle.json",
+  image: "ImageDefaultStyle.json",
+  input: "InputDefaultStyle.json"
+};
 
 export default {
   name: "standardTag",
   props: {
+    typeProp: {
+      //父组件传递过来 的组件类型
+      type: String,
+      required: true
+    },
     pageIdProp: {
       type: Number
     },
@@ -53,72 +77,86 @@ export default {
     return {
       idData: {
         id: ProId.getUniqueId(), //组件id
-        type: "", //组件类型
-        pageId: "" //组件所在的页面id
+        type: this.typeProp, //组件类型
+        pageId: this.pageIdProp //组件所在的页面id
       },
       handles: [],
       defultPostion: {
-        top:
-          this.styleFromParent.top - 50 < 0
-            ? 10
-            : this.styleFromParent.top - 50,
-        left:
-          this.styleFromParent.left - 50 < 0
-            ? 10
-            : this.styleFromParent.left - 50,
-        width: 100,
-        height: 100
+        
+         
+        
       },
       defautlOhterStyle: {},
       //把位置样式 和 其他样式的值都保存在这里
       allStyle: {
-        top:
-          this.styleFromParent.top - 50 < 0
-            ? 10
-            : this.styleFromParent.top - 50,
-        left:
-          this.styleFromParent.left - 50 < 0
-            ? 10
-            : this.styleFromParent.left - 50,
-        width: 100,
-        height: 100,
-        text: "",
-        borderColor: "#FF90EE",
-        borderWidth: "1px",
-        borderStyle: "solid",
-
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        boxSizing: "border-box",
-
-        backgroundColor: "#FFAFAD",
-        borderRadius: "5px",
-        color: "#ff0000",
-        fontSize: "30px",
-        fontWeight: "bold",
-
-        backgroundImage: "url('../../static/timg.jpg')",
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "100% auto",
-        display: "flex"
+                top:
+            this.styleFromParent.top - 50 < 0
+              ? 10
+              : this.styleFromParent.top - 50,
+          left:
+            this.styleFromParent.left - 50 < 0
+              ? 10
+              : this.styleFromParent.left - 50
       }
     };
   },
   watch: {},
   created() {
-    console.log("组件Id=" + this.idData.id);
+    //在这里根据不同的组件加载不同的外观
+
+    Http.get("../../static/json/defaultStyle/" + TypeMapStyle[this.idData.type])
+      .then(style => {
+        console.log("创建时加载", style.data);
+
+        switch (this.idData.type) {
+          case "image":
+            this.allStyle = Object.assign({}, this.allStyle, style.data, {
+              backgroundImage:
+                "url(" + this.styleFromParent.backgroundImage + ")"
+            });
+            break;
+          case "input":
+            this.allStyle = Object.assign({}, this.allStyle, style.data);
+            break;
+          case "button":
+            this.allStyle = Object.assign({}, this.allStyle, style.data);
+            break;
+        }
+
+      //   //计算宽 和 高 一半的值
+      //   const W2 = Math.ceil((this.allStyle.width + "").replace("px", "") / 2);
+      //   const H2 = Math.ceil((this.allStyle.height + "").replace("px", "") / 2);
+      //   //让拖拽的空间默认显示在拖拽的位置
+      //   var temp = {
+      //     top:
+      //       this.styleFromParent.top - H2 < 0
+      //         ? 10
+      //         : this.styleFromParent.top - H2,
+      //     left:
+      //       this.styleFromParent.left - W2 < 0
+      //         ? 10
+      //         : this.styleFromParent.left - W2
+      //   };
+      //  // this.allStyle = Object.assign({}, this.allStyle, temp);
+      //   this.defultPostion=Object.assign({}, this.defultPostion, temp);
+
+          this.setStyle({ ...this.allStyle });
+   
+      })
+      .catch(e => {
+        console.log("加载默认组件样式出差 要加载的组件是", this.idData, e);
+      });
   },
   updated() {},
+  beforeMount(){
+   // this.setStyle({ ...this.allStyle });
+  },
   mounted() {
     console.log("父亲样式:", this.styleFromParent);
-
-    this.setStyle({ ...this.allStyle });
-
+     this.triggerStyleChangeEvent();
     event.listonEvent(
       event.editStyleChangeName,
       function(va) {
-        console.log(event.editStyleChangeName + "事件触发  子控件", va);
         if (va.obj === this) {
           this.setStyle(styleVal.addPx({ ...va.style }));
         }
@@ -138,22 +176,28 @@ export default {
     setStyle(styleJsonObj) {
       if (!styleJsonObj) return;
 
-      console.log("设置样式被执行", styleJsonObj);
+      console.log("带设置的样式", styleJsonObj);
 
       var posKeyName = ["top", "left", "width", "height"];
       var keysName = Object.keys(styleJsonObj);
 
       //把top left 取出设置到位置样式对象
-      var dpos = this.defultPostion || (this.defultPostion = {});
+   
       for (let a of posKeyName) {
-        //left top存在 且 设置为整数 或可以转化为整数
-        let tem = styleJsonObj[a];
+     
+        let tem = (styleJsonObj[a] + "").replace("px", "");
+
         if (tem && parseInt(tem) == tem) {
-          dpos[a] = parseInt(tem);
+            if (this.defultPostion.hasOwnProperty(a)) {
+            this.defultPostion[a] = parseInt(tem);
+          } else {
+            this.$set(this.defultPostion, a, parseInt(tem));
+          }
+      
         }
       }
 
-      var allStyle = this.allStyle || (this.allStyle = {});
+      var allStyle = this.allStyle ;
       if (!this.defautlOhterStyle) {
         this.defautlOhterStyle = {};
       }
@@ -176,19 +220,18 @@ export default {
         this.defultPostion
       );
     },
-      //写json文件提交
+    //写json文件提交
     saveStyleToJson() {
-    
-      var jsonVal={
-        fileName:this.idData.type+"_"+this.idData.id+"_"+this.idData.pageId,//预览组件时根据json文件名称可以判断这份配置的对象位置
-        style:{...this.allStyle},
-        idData:{...this.idData},
-        screenWidth:414
-        //还要补充事件代码保存为json 
+      var jsonVal = {
+        fileName:
+          this.idData.type + "_" + this.idData.id + "_" + this.idData.pageId, //预览组件时根据json文件名称可以判断这份配置的对象位置
+        style: { ...this.allStyle },
+        idData: { ...this.idData },
+        screenWidth: 414
+        //还要补充事件代码保存为json
         //屏幕适配办法 涉及到的大小单位都是px 保存设计时的屏幕宽度 在预览或运行时 获取运行环境屏幕宽度，
         //根据runScreenWidth/designScreenWidth*json配置里的组件宽度  就等于实际运行时的组件宽度
-      }
-      
+      };
     },
 
     onDragstop() {

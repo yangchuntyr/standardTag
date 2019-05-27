@@ -1,0 +1,18 @@
+[
+    {
+        "type": "button",
+        "icon": "../../static/image/button.png",
+        "name":"按钮"
+    },
+    {
+        "type": "image",
+        "icon": "../../static/image/image.png",
+        "name":"图片"
+    },
+    {
+        "type": "input",
+        "icon": "../../static/image/input.png",
+        "name":"text输入"
+    }
+    
+]

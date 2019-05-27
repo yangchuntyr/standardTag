@@ -1,42 +1,74 @@
 <template>
   <div id="app">
-    <leftBlock></leftBlock>
-  <div>
-     <div>(备注:此屏幕模拟的是iphone6s的屏幕大小 屏幕414*736)</div>
-  <phoneBox/>
-  </div>
+    <div class="head">头部</div>
+    <div class="down">
+      <div class="left">
+        <div class="leftTop">页面-左上</div>
+        <div class="leftDown">
+          <leftBlock></leftBlock>
+        </div>
+        
+      </div>
 
-  <editStyle></editStyle>
- 
+      <div class="middle">
+        <div>(备注:此屏幕模拟的是iphone6s的屏幕大小 屏幕414*736)</div>
+        <phoneBox/>
+      </div>
+      <div class="right">
+        <editStyle></editStyle>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import phoneBox from './components/phoneBox'
-import editStyle from './components/styleEdit'
-import leftBlock from "./components/leftBlock"
+import phoneBox from "./components/phoneBox";
+import editStyle from "./components/styleEdit";
+import leftBlock from "./components/leftBlock";
 export default {
-  name: 'App',
-  components:{
-    phoneBox,editStyle,leftBlock
+  name: "App",
+  components: {
+    phoneBox,
+    editStyle,
+    leftBlock
   }
-}
+};
 </script>
 
 <style  scoped>
-
-
-
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-  display: flex;
+  width: 1820px;
+  height: 1080px;
+}
 
-  justify-content: center;
-  align-items: center;
+.head{
+width: 100%;
+height: 100px;
+border: 1px solid lightgrey;
+}
+
+.down{
+  display: flex;
+  justify-content: space-between;
+}
+
+.down>.left{
+  width: 253px;
+
+}
+
+.down>.left>.leftTop{
+  height: 302px;
+  width: 100%;
+  border: solid 1px lightblue;
+}
+
+.down>.left>.leftDown{
+height: 375px;
+width: 100%;
+ border: solid 1px lightblue;
 }
 </style>

@@ -1,0 +1,20 @@
+{
+    "width": "200px",
+    "height": "70px",
+    "text": "文本输入框",
+    "borderColor": "#eeeeee",
+    "borderWidth": "0px",
+    "borderStyle": "solid",
+    "display": "flex",
+    "justifyContent": "center",
+    "alignItems": "center",
+    "boxSizing": "border-box",
+    "backgroundColor": "#eeeeee",
+    "borderRadius": "0px",
+    "color": "#333333",
+    "fontSize": "20px",
+    "fontWeight": "normal",
+    "backgroundImage": "",
+    "backgroundRepeat": "no-repeat",
+    "backgroundSize": "100% auto"
+}

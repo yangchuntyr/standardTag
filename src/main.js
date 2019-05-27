@@ -8,6 +8,7 @@ import App from './App'
 Vue.config.productionTip = true;
 
 
+
 Vue.prototype.$getPx = function (design, designWidth = 750) { // 750为设计稿宽度
   // 获取窗口尺寸
   let width = document.documentElement.getBoundingClientRect().width

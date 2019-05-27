@@ -109,7 +109,7 @@ export default {
     event.listonEvent(
       event.childStyleChangeName,
       function(va) {
-        console.log(event.childStyleChangeName + "事件触发  样式编辑器", va);
+        console.log(event.childStyleChangeName + "  样式编辑器中执行", va);
 
         this.bindTarget = va.obj;
 
@@ -208,10 +208,10 @@ export default {
 
 <style scoped>
 .fixedRight {
-  position: absolute;
+  /* position: absolute;
   right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 50%; */
+  /* transform: translateY(-50%); */
   padding: 5px;
   border: 1px solid lightgray;
 }
