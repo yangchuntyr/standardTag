@@ -57,6 +57,9 @@
           accept="image/*"
           placeholder="输入"
         >
+
+       <span @click="clearImage" >清空</span>
+
       </div>
 
       <div class="outerDiv">
@@ -145,6 +148,10 @@ export default {
     }
   },
   methods: {
+    clearImage(){
+      if("backgroundImage" in this.Style)
+    this.Style.backgroundImage="";
+    },
     getFiles(val) {
       //等待上传的文件
       this.waitingUpFile = val.target.files[0];

@@ -28,23 +28,6 @@ import ProId from "../js/proId";
 var event = commonEvent.getEventInstance();
 const handlesParam = ["tl", "tm", "tr", "mr", "br", "bm", "bl", "ml"];
 //控件类型对应的默认样式文件
-const TypeMapStyle = {
-  button: "ButtonDefaultStyle.json",
-  image: "ImageDefaultStyle.json",
-  input: "InputDefaultStyle.json"
-};
-
-const TypeMapW2 = {
-  button: "",
-  image: "",
-  input: ""
-};
-
-const TypeMapH2 = {
-  button: "ButtonDefaultStyle.json",
-  image: "ImageDefaultStyle.json",
-  input: "InputDefaultStyle.json"
-};
 
 export default {
   name: "standardTag",
@@ -57,10 +40,7 @@ export default {
     pageIdProp: {
       type: Number
     },
-    styleChangeEvent: {
-      type: Function,
-      default: null
-    },
+
     parentSelect: {
       //样式选择器指定的组件会成为控件拖拽的空间 如.class,#id,#id>.class
       type: String,
@@ -82,78 +62,39 @@ export default {
       },
       handles: [],
       defultPostion: {
-        
-         
-        
+        top: this.styleFromParent.top,
+        left: this.styleFromParent.left,
+        width: this.styleFromParent.width,
+        height: this.styleFromParent.height
       },
-      defautlOhterStyle: {},
-      //把位置样式 和 其他样式的值都保存在这里
-      allStyle: {
-                top:
-            this.styleFromParent.top - 50 < 0
-              ? 10
-              : this.styleFromParent.top - 50,
-          left:
-            this.styleFromParent.left - 50 < 0
-              ? 10
-              : this.styleFromParent.left - 50
-      }
+      defautlOhterStyle: {}
     };
   },
   watch: {},
   created() {
-    //在这里根据不同的组件加载不同的外观
+    //这里判断是否加载背景图片
+    console.log("父亲那里过来的样式对象值", this.styleFromParent);
+    let style = { ...this.styleFromParent };
 
-    Http.get("../../static/json/defaultStyle/" + TypeMapStyle[this.idData.type])
-      .then(style => {
-        console.log("创建时加载", style.data);
+    switch (this.idData.type) {
+      case "image":
+        style = {
+          ...style,
+          backgroundImage: "url(" + this.styleFromParent.backgroundImage + ")"
+        };
+        break;
+      case "input":
+        break;
+      case "button":
+        break;
+    }
 
-        switch (this.idData.type) {
-          case "image":
-            this.allStyle = Object.assign({}, this.allStyle, style.data, {
-              backgroundImage:
-                "url(" + this.styleFromParent.backgroundImage + ")"
-            });
-            break;
-          case "input":
-            this.allStyle = Object.assign({}, this.allStyle, style.data);
-            break;
-          case "button":
-            this.allStyle = Object.assign({}, this.allStyle, style.data);
-            break;
-        }
-
-      //   //计算宽 和 高 一半的值
-      //   const W2 = Math.ceil((this.allStyle.width + "").replace("px", "") / 2);
-      //   const H2 = Math.ceil((this.allStyle.height + "").replace("px", "") / 2);
-      //   //让拖拽的空间默认显示在拖拽的位置
-      //   var temp = {
-      //     top:
-      //       this.styleFromParent.top - H2 < 0
-      //         ? 10
-      //         : this.styleFromParent.top - H2,
-      //     left:
-      //       this.styleFromParent.left - W2 < 0
-      //         ? 10
-      //         : this.styleFromParent.left - W2
-      //   };
-      //  // this.allStyle = Object.assign({}, this.allStyle, temp);
-      //   this.defultPostion=Object.assign({}, this.defultPostion, temp);
-
-          this.setStyle({ ...this.allStyle });
-   
-      })
-      .catch(e => {
-        console.log("加载默认组件样式出差 要加载的组件是", this.idData, e);
-      });
+    this.setStyle(style);
   },
   updated() {},
-  beforeMount(){
-   // this.setStyle({ ...this.allStyle });
-  },
+  beforeMount() {},
   mounted() {
-    console.log("父亲样式:", this.styleFromParent);
-     this.triggerStyleChangeEvent();
+    this.triggerStyleChangeEvent();
     event.listonEvent(
       event.editStyleChangeName,
       function(va) {
@@ -165,13 +106,18 @@ export default {
   },
 
   methods: {
+  
+
     triggerStyleChangeEvent() {
       event.triggerEvent(event.childStyleChangeName, {
-        style: this.allStyle,
+        style: this.getAllStyle(),
         obj: this
       });
     },
 
+    getAllStyle() {
+      return { ...this.defultPostion, ...this.defautlOhterStyle };
+    },
     //设置样式，可以只设置部分样式
     setStyle(styleJsonObj) {
       if (!styleJsonObj) return;
@@ -182,22 +128,20 @@ export default {
       var keysName = Object.keys(styleJsonObj);
 
       //把top left 取出设置到位置样式对象
-   
+
       for (let a of posKeyName) {
-     
         let tem = (styleJsonObj[a] + "").replace("px", "");
 
         if (tem && parseInt(tem) == tem) {
-            if (this.defultPostion.hasOwnProperty(a)) {
+          if (this.defultPostion.hasOwnProperty(a)) {
             this.defultPostion[a] = parseInt(tem);
           } else {
             this.$set(this.defultPostion, a, parseInt(tem));
           }
-      
         }
       }
 
-      var allStyle = this.allStyle ;
+ 
       if (!this.defautlOhterStyle) {
         this.defautlOhterStyle = {};
       }
@@ -211,7 +155,7 @@ export default {
           }
         }
 
-        allStyle[a] = styleJsonObj[a];
+      
       }
 
       console.log(
@@ -225,7 +169,7 @@ export default {
       var jsonVal = {
         fileName:
           this.idData.type + "_" + this.idData.id + "_" + this.idData.pageId, //预览组件时根据json文件名称可以判断这份配置的对象位置
-        style: { ...this.allStyle },
+        style: { ...this.getAllStyle() },
         idData: { ...this.idData },
         screenWidth: 414
         //还要补充事件代码保存为json
@@ -278,7 +222,8 @@ export default {
     },
     onActivated() {
       this.handles = handlesParam;
-      this.$emit("selectedEvent", this.allStyle, this);
+      let allStyle = this.getAllStyle();
+      this.$emit("selectedEvent", allStyle, this);
       this.triggerStyleChangeEvent();
       //保存属性参数
     },

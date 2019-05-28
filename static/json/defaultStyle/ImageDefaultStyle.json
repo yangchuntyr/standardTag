@@ -11,7 +11,7 @@
     "boxSizing": "border-box",
     "backgroundColor": "#eeeeee",
     "borderRadius": "0px",
-    "color": "#ffffff",
+    "color": "#000000",
     "fontSize": "30px",
     "fontWeight": "normal",
     "backgroundImage": "",

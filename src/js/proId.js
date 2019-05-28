@@ -20,9 +20,11 @@ class ProUniqueId {
 
 
      getUniqueId(){
-         this.id++;
-         localStorage.setItem("maxId",this.id)
-         return this.id;
+        // this.id++;
+       //  localStorage.setItem("maxId",this.id)
+       let time=new Date();
+      // time.getTime();
+         return  time.getTime();
      }
 
   }
