@@ -15,6 +15,8 @@ var tem= function() {
     //编辑框控件样式改变事件
     this.editStyleChangeName="editStyleChangeName";
     this.dragEndName="dragEndName";
+    //右键点击弹出菜单事件
+    this.rightClickName="rightClickName";
     this.listonEvent=function(eventName,fn) {
        
         this.event.$on(eventName,fn)

@@ -16,5 +16,6 @@
     "fontWeight": "normal",
     "backgroundImage": "",
     "backgroundRepeat": "no-repeat",
-    "backgroundSize": "100% auto"
+    "backgroundSize": "100% auto",
+    "opacity":"1"
 }

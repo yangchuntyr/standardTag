@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app"  @contextmenu="contextmenu($event)"   >
     <div class="head">头部</div>
     <div class="down">
       <div class="left">
@@ -17,7 +17,9 @@
       <div class="right">
         <editStyle></editStyle>
       </div>
+ 
     </div>
+         <Menu  @menuItemClick="menuItemClick" ></Menu>
   </div>
 </template>
 
@@ -25,12 +27,31 @@
 import phoneBox from "./components/phoneBox";
 import editStyle from "./components/styleEdit";
 import leftBlock from "./components/leftBlock";
+import Menu from "./components/menu"
+import commonEvent from "./js/eventCtr";
+let event=commonEvent.getEventInstance();
 export default {
+  data(){
+    return {
+  
+    }
+  },
   name: "App",
   components: {
     phoneBox,
     editStyle,
-    leftBlock
+    leftBlock,
+    Menu
+  },
+  methods:{
+    menuItemClick(item){
+   console.log("被点击的是",item.title)
+    },
+    contextmenu(_event){
+  _event.preventDefault();
+   event.triggerEvent(event.rightClickName,{x:_event.x,y:_event.y});
+   
+    }
   }
 };
 </script>

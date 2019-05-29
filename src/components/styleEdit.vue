@@ -3,49 +3,50 @@
     <div>
       <div class="outerDiv">
         <span>标题</span>
-        <input type="text" v-model="Style.text" placeholder="输入">
+        <input type="text" :disabled="disable" v-model="style.text" placeholder="输入">
       </div>
     </div>
 
     <div>
       <div class="outerDiv">
         <span>字体大小(px)</span>
-        <input type="number" v-model="Style.fontSize" min="10" placeholder="输入">
+        <input type="number" :disabled="disable" v-model="style.fontSize" min="10" placeholder="输入">
       </div>
 
       <div class="outerDiv">
         <span>字体颜色</span>
 
-        <input type="color" v-model="Style.color" placeholder="输入">
+        <input type="color" v-model="style.color" :disabled="disable" placeholder="输入">
       </div>
     </div>
 
     <div>
       <div class="outerDiv">
         <span>宽(px)</span>
-        <input type="number" min="10" v-model="Style.width" placeholder="输入">
+        <input type="number" min="10" v-model="style.width" :disabled="disable" placeholder="输入">
       </div>
 
-      <div class="outerDiv">
+      <div class="outerDiv" aria-disabled="true" >
         <span>高(px)</span>
-        <input type="number" min="0" v-model="Style.height" placeholder="输入">
+        <input type="number" min="0" v-model="style.height" :disabled="disable" placeholder="输入">
       </div>
 
       <div class="outerDiv">
         <span>top(px)</span>
-        <input type="number" v-model="Style.top" min="0" placeholder="输入">
+        <input type="number" v-model="style.top" min="0" :disabled="disable" placeholder="输入">
       </div>
 
       <div class="outerDiv">
         <span>left(px)</span>
-        <input type="number" v-model="Style.left" min="0" placeholder="输入">
+        <input type="number" v-model="style.left" min="0" :disabled="disable" placeholder="输入">
       </div>
     </div>
 
     <div>
       <div class="outerDiv">
         <span>背景颜色</span>
-        <input type="color" v-model="Style.backgroundColor" placeholder="输入">
+        <input type="color" v-model="style.backgroundColor" placeholder="输入">
+          <label @click="clearBackColor" >清空</label>
       </div>
 
       <div class="outerDiv">
@@ -58,27 +59,33 @@
           placeholder="输入"
         >
 
-       <span @click="clearImage" >清空</span>
+       <label @click="clearImage" >清空</label>
 
       </div>
 
       <div class="outerDiv">
         <span>边框颜色</span>
-        <input type="color" v-model="Style.borderColor" placeholder="输入">
+        <input type="color" v-model="style.borderColor" :disabled="disable" placeholder="输入">
       </div>
       <div class="outerDiv">
         <span>边框宽度(px)</span>
-        <input type="number" min="0" v-model="Style.borderWidth" placeholder="输入">
+        <input type="number" min="0" :disabled="disable" v-model="style.borderWidth" placeholder="输入">
       </div>
       <div class="outerDiv">
         <span>圆角(px)</span>
-        <input type="number" v-model="Style.borderRadius" min="0" placeholder="输入">
+        <input type="number" :disabled="disable" v-model="style.borderRadius" min="0" placeholder="输入">
       </div>
 
       <div class="outerDiv">
         <span>隐藏</span>
-        <input type="checkbox" v-model="Style.display" min="0" placeholder="输入">
+        <input type="checkbox" :disabled="disable" v-model="style.display" min="0" placeholder="输入">
       </div>
+
+        <div class="outerDiv">
+        <span>透明</span>
+        <input type="number" :disabled="disable" v-model="style.opacity" min="0" max="1" step="0.1" placeholder="输入">
+      </div>
+
     </div>
 
  
@@ -99,9 +106,18 @@ export default {
     return {
       image: "",
       waitingUpFile: "",
-      Style: {},
+      style: {},
       bindTarget: null
     };
+  },
+  computed:{
+  disable:(vm)=>{
+     if(vm.bindTarget&&vm.bindTarget.pageId){
+        return true;
+     }else{
+       return false;
+     }
+  },
   },
   props: {
     propsStyle: {
@@ -120,14 +136,14 @@ export default {
           if (obj.display == "none") {
             obj.display = false;
           }
-          this.Style = Object.assign({}, this.Style, obj);
+          this.style = Object.assign({}, this.style, obj);
         });
       }.bind(this)
     );
   },
 
   watch: {
-    Style: {
+    style: {
       handler: function(newV) {
         var isShow = newV.display;
         console.log("newV", newV);
@@ -148,19 +164,24 @@ export default {
     }
   },
   methods: {
+    //清空背景颜色
+    clearBackColor(){
+      if("backgroundColor" in this.style)
+    this.style.backgroundColor="";
+    },
     clearImage(){
-      if("backgroundImage" in this.Style)
-    this.Style.backgroundImage="";
+      if("backgroundImage" in this.style)
+    this.style.backgroundImage="";
     },
     getFiles(val) {
       //等待上传的文件
       this.waitingUpFile = val.target.files[0];
-      if (this.Style.hasOwnProperty("backgroundImage")) {
-        this.Style["backgroundImage"] =
+      if (this.style.hasOwnProperty("backgroundImage")) {
+        this.style["backgroundImage"] =
           "url(" + this.getObjectURL(val.target.files[0]) + ")";
       } else {
         this.$set(
-          this.Style,
+          this.style,
           "backgroundImage",
           "url(" + this.getObjectURL(val.target.files[0]) + ")"
         );
@@ -215,15 +236,15 @@ export default {
 
 <style scoped>
 .fixedRight {
-  /* position: absolute;
-  right: 20px;
-  top: 50%; */
-  /* transform: translateY(-50%); */
+
   padding: 5px;
   border: 1px solid lightgray;
 }
 .outerDiv {
   margin-bottom: 5px;
+  display: flex;
+    /* justify-content: center; */
+    align-items: center;
 }
 .outerDiv > span {
   min-width: 80px;
@@ -235,6 +256,7 @@ export default {
 .outerDiv > input {
   height: 30px;
   text-indent: 10px;
+  width: 175px;
 }
 
 .fixedRight > div {

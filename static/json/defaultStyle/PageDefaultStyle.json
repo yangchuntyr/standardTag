@@ -1,0 +1,10 @@
+{
+
+
+"boxSizing": "border-box",
+"backgroundColor": "#ffffff",
+"display":"flex",
+"backgroundImage": "",
+"backgroundRepeat": "no-repeat",
+"backgroundSize": "100% auto"
+}

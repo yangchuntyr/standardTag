@@ -98,6 +98,7 @@ export default {
     event.listonEvent(
       event.editStyleChangeName,
       function(va) {
+      
         if (va.obj === this) {
           this.setStyle(styleVal.addPx({ ...va.style }));
         }
@@ -122,7 +123,7 @@ export default {
     setStyle(styleJsonObj) {
       if (!styleJsonObj) return;
 
-      console.log("带设置的样式", styleJsonObj);
+      console.log("待设置的样式", styleJsonObj);
 
       var posKeyName = ["top", "left", "width", "height"];
       var keysName = Object.keys(styleJsonObj);
