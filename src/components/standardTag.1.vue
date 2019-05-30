@@ -1,5 +1,5 @@
 <template>
-  <div  :style="zStyle" >
+  <div v-on:click.stop="childclick" :style="zStyle" >
     <VueDraggableResizable
       :style="defautlOhterStyle"
       :parent="parentSelect"
@@ -59,9 +59,7 @@ export default {
         return {
             zStyle:{
                 zIndex:ProId.getOrderId(),
-                position: 'absolute',
-                left:'opx',
-                top:'0px'
+                // position: 'absolute',
             },
             idData: {
                 id: ProId.getUniqueId(), //组件id
@@ -80,7 +78,7 @@ export default {
     },
     watch: {},
     destroyed(){
-        console.log('组件'+this.idData.id+'已经被删除');
+        console.log('我已经被删除',this.idData.id);
     },
     created() {
     //这里判断是否加载背景图片
@@ -118,13 +116,6 @@ export default {
 
     methods: {
   
-        //**导出组件的位置信息 宽 高 top left zindex */
-        exportPostionInfo(){
-            return {
-                ...this.defultPostion,
-                zIndex: this.zStyle.zIndex
-            };
-        },
 
         triggerStyleChangeEvent() {
             event.triggerEvent(event.childStyleChangeName, {
@@ -143,7 +134,7 @@ export default {
             console.log('待设置的样式', styleJsonObj);
 
             var posKeyName = ['top', 'left', 'width', 'height'];
-           
+            var keysName = Object.keys(styleJsonObj);
 
             //把top left 取出设置到位置样式对象
 
@@ -151,7 +142,7 @@ export default {
                 let tem = (styleJsonObj[a] + '').replace('px', '');
 
                 if (tem && parseInt(tem) == tem) {
-                    if (a in this.defultPostion) {
+                    if (this.defultPostion.hasOwnProperty(a)) {
                         this.defultPostion[a] = parseInt(tem);
                     } else {
                         this.$set(this.defultPostion, a, parseInt(tem));
@@ -235,9 +226,9 @@ export default {
 
             this.triggerStyleChangeEvent();
         },
-        // childclick() {
-        //     this.$emit('clickEvent');
-        // },
+        childclick() {
+            this.$emit('clickEvent');
+        },
         onActivated() {
             this.handles = handlesParam;
             let allStyle = this.getAllStyle();

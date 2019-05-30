@@ -22,30 +22,30 @@
   </div>
 </template>
 <script>
-import commonEvent from "../js/eventCtr";
-import componentsLib from "../../static/json/componentLib";
-console.log("componentsLib=", componentsLib);
+import commonEvent from '../js/eventCtr';
+import componentsLib from '../../static/json/componentLib';
+console.log('componentsLib=', componentsLib);
 
 var event = commonEvent.getEventInstance();
 export default {
-  data() {
-    return {
-      items: componentsLib
-    };
-  },
-  methods: {
-    dragend() {
-      console.log("拖动结束", { ...arguments });
-      event.triggerEvent(event.dragEndName, {
-        ctrInfo: { ...arguments[0] },
-        x: arguments["1"].clientX,
-        y: arguments["1"].clientY
-      });
+    data() {
+        return {
+            items: componentsLib
+        };
     },
-    start(a) {
-      console.log("开始拖动", arguments);
+    methods: {
+        dragend() {
+            console.log('拖动结束', { ...arguments });
+            event.triggerEvent(event.dragEndName, {
+                ctrInfo: { ...arguments[0] },
+                x: arguments['1'].pageX,
+                y: arguments['1'].pageY
+            });
+        },
+        start() {
+            console.log('开始拖动', arguments);
+        }
     }
-  }
 };
 </script>
 

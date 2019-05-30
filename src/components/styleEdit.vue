@@ -94,143 +94,143 @@
 
 
 <script>
-import axios from "axios";
+import axios from 'axios';
 
-import commonEvent from "../js/eventCtr";
-import rpxObj from "../js/styleVal";
+import commonEvent from '../js/eventCtr';
+import rpxObj from '../js/styleVal';
 
 var event = commonEvent.getEventInstance();
 
 export default {
-  data() {
-    return {
-      image: "",
-      waitingUpFile: "",
-      style: {},
-      bindTarget: null
-    };
-  },
-  computed:{
-  disable:(vm)=>{
-     if(vm.bindTarget&&vm.bindTarget.pageId){
-        return true;
-     }else{
-       return false;
-     }
-  },
-  },
-  props: {
-    propsStyle: {
-      type: Object
-    }
-  },
-  mounted() {
-    event.listonEvent(
-      event.childStyleChangeName,
-      function(va) {
-        console.log(event.childStyleChangeName + "  样式编辑器中执行", va);
-
-        this.bindTarget = va.obj;
-
-        rpxObj.replacePx(va.style).then(obj => {
-          if (obj.display == "none") {
-            obj.display = false;
-          }
-          this.style = Object.assign({}, this.style, obj);
-        });
-      }.bind(this)
-    );
-  },
-
-  watch: {
-    style: {
-      handler: function(newV) {
-        var isShow = newV.display;
-        console.log("newV", newV);
-        event.triggerEvent(event.editStyleChangeName, {
-          style: { ...newV, ...{ display: isShow ? "flex" : "none" } },
-          obj: this.bindTarget
-        });
-      },
-      deep: true
+    data() {
+        return {
+            image: '',
+            waitingUpFile: '',
+            style: {},
+            bindTarget: null
+        };
     },
-    //父控件修改了子控件的样式要立即更新子控件的
-    propsStyle: {
-      handler: function(newV, oldV) {
-        console.log("样式编辑器样式属性被改变", newV);
-      },
-
-      deep: true
-    }
-  },
-  methods: {
-    //清空背景颜色
-    clearBackColor(){
-      if("backgroundColor" in this.style)
-    this.style.backgroundColor="";
+    computed:{
+        disable:(vm)=>{
+            if(vm.bindTarget&&vm.bindTarget.pageId){
+                return true;
+            }else{
+                return false;
+            }
+        },
     },
-    clearImage(){
-      if("backgroundImage" in this.style)
-    this.style.backgroundImage="";
-    },
-    getFiles(val) {
-      //等待上传的文件
-      this.waitingUpFile = val.target.files[0];
-      if (this.style.hasOwnProperty("backgroundImage")) {
-        this.style["backgroundImage"] =
-          "url(" + this.getObjectURL(val.target.files[0]) + ")";
-      } else {
-        this.$set(
-          this.style,
-          "backgroundImage",
-          "url(" + this.getObjectURL(val.target.files[0]) + ")"
-        );
-      }
-    },
-    //***获取文件地址 用来预览图片 */
-    getObjectURL(file) {
-      let url = null;
-      if (window.createObjectURL != undefined) {
-        // basic
-        url = window.createObjectURL(file);
-      } else if (window.webkitURL != undefined) {
-        // webkit or chrome
-        url = window.webkitURL.createObjectURL(file);
-      } else if (window.URL != undefined) {
-        // mozilla(firefox)
-        url = window.URL.createObjectURL(file);
-      }
-      return url;
-    },
-
-    uploadFile: function(apiUrl) {
-      if (!this.waitingUpFile) return;
-
-      let param = new FormData(); // 创建form对象
-      param.append("imgFile", this.waitingUpFile); //对应后台接收图片名
-
-      var options = {
-        // 设置axios的参数
-        url: apiUrl,
-        data: param,
-        method: "post",
-        headers: {
-          "Content-Type": "multipart/form-data"
+    props: {
+        propsStyle: {
+            type: Object
         }
-      };
-
-      axios
-        .post(options)
-        .then(function(res) {
-          console.log(res);
-        })
-        .catch(function(error) {
-          console.log("发生错误", error);
-        });
     },
+    mounted() {
+        event.listonEvent(
+            event.childStyleChangeName,
+            function(va) {
+                console.log(event.childStyleChangeName + '  样式编辑器中执行', va);
+
+                this.bindTarget = va.obj;
+
+                rpxObj.replacePx(va.style).then(obj => {
+                    if (obj.display == 'none') {
+                        obj.display = false;
+                    }
+                    this.style = Object.assign({}, this.style, obj);
+                });
+            }.bind(this)
+        );
+    },
+
+    watch: {
+        style: {
+            handler: function(newV) {
+                var isShow = newV.display;
+                console.log('newV', newV);
+                event.triggerEvent(event.editStyleChangeName, {
+                    style: { ...newV, ...{ display: isShow ? 'flex' : 'none' } },
+                    obj: this.bindTarget
+                });
+            },
+            deep: true
+        },
+        //父控件修改了子控件的样式要立即更新子控件的
+        propsStyle: {
+            handler: function(newV) {
+                console.log('样式编辑器样式属性被改变', newV);
+            },
+
+            deep: true
+        }
+    },
+    methods: {
+    //清空背景颜色
+        clearBackColor(){
+            if('backgroundColor' in this.style)
+                this.style.backgroundColor='';
+        },
+        clearImage(){
+            if('backgroundImage' in this.style)
+                this.style.backgroundImage='';
+        },
+        getFiles(val) {
+            //等待上传的文件
+            this.waitingUpFile = val.target.files[0]; //this.style.hasOwnProperty('backgroundImage')
+            if ('backgroundImage' in this.style) {
+                this.style['backgroundImage'] =
+          'url(' + this.getObjectURL(val.target.files[0]) + ')';
+            } else {
+                this.$set(
+                    this.style,
+                    'backgroundImage',
+                    'url(' + this.getObjectURL(val.target.files[0]) + ')'
+                );
+            }
+        },
+        //***获取文件地址 用来预览图片 */
+        getObjectURL(file) {
+            let url = null;
+            if (window.createObjectURL != undefined) {
+                // basic
+                url = window.createObjectURL(file);
+            } else if (window.webkitURL != undefined) {
+                // webkit or chrome
+                url = window.webkitURL.createObjectURL(file);
+            } else if (window.URL != undefined) {
+                // mozilla(firefox)
+                url = window.URL.createObjectURL(file);
+            }
+            return url;
+        },
+
+        uploadFile: function(apiUrl) {
+            if (!this.waitingUpFile) return;
+
+            let param = new FormData(); // 创建form对象
+            param.append('imgFile', this.waitingUpFile); //对应后台接收图片名
+
+            var options = {
+                // 设置axios的参数
+                url: apiUrl,
+                data: param,
+                method: 'post',
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            };
+
+            axios
+                .post(options)
+                .then(function(res) {
+                    console.log(res);
+                })
+                .catch(function(error) {
+                    console.log('发生错误', error);
+                });
+        },
 
  
-  }
+    }
 };
 </script>
 

@@ -1,10 +1,19 @@
 {
-
-
-"boxSizing": "border-box",
-"backgroundColor": "#ffffff",
-"display":"flex",
-"backgroundImage": "",
-"backgroundRepeat": "no-repeat",
-"backgroundSize": "100% auto"
+    "width": "414px",
+    "height": "736px",
+    "top": "",
+    "left": "",
+    "text": "页面",
+    "borderColor": "#bfbfbf",
+    "borderWidth": "1px",
+    "borderStyle": "solid",
+    "fontSize": "",
+    "boxSizing": "border-box",
+    "backgroundColor": "#ffffff",
+    "display": "flex",
+    "backgroundImage": "",
+    "justifyContent": "start",
+    "alignItems": "start",
+    "backgroundRepeat": "no-repeat",
+    "backgroundSize": "100% auto"
 }
