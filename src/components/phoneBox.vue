@@ -19,7 +19,7 @@
       :pageIdProp="pageId"
     />
 </div>
-      <Menu  @menuItemClick="menuItemClick" v-show="isShowPage" ></Menu>
+      <Menu  @menuItemClick="menuItemClick" v-if"isShowPage" ></Menu>
    
   </div>
 </template>

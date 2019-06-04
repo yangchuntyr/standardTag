@@ -1,17 +1,17 @@
 [
     {
         "type": "button",
-        "icon": "../../static/image/button.png",
+        "icon": "../../static/img/button.png",
         "name":"按钮"
     },
     {
         "type": "image",
-        "icon": "../../static/image/image.png",
+        "icon": "../../static/img/image.png",
         "name":"图片"
     },
     {
         "type": "input",
-        "icon": "../../static/image/input.png",
+        "icon": "../../static/img/input.png",
         "name":"text输入"
     }
     
