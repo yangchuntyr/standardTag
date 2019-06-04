@@ -1,9 +1,9 @@
 <template>
-  <div
+  <div 
     @contextmenu="contextmenu($event)"
     class="hello parent"
     @click.self="clickPhone"
-    id="boxPhone"
+    :id="pageId"
     :style="style"
   
   >
@@ -15,24 +15,25 @@
       :key="index"
       :typeProp="item.type"
   
-      parentSelect=".parent"
+      :parentSelect="'#'+pageId"
       :pageIdProp="pageId"
     />
 </div>
-      <Menu  @menuItemClick="menuItemClick" ></Menu>
-    
+      <Menu  @menuItemClick="menuItemClick" v-show="isShowPage" ></Menu>
+   
   </div>
 </template>
 
 <script>
+
 import standardTag from '@/Components/standardTag';
 import Menu from './menu';
 import commonEvent from '../js/eventCtr';
 import ProId from '../js/proId';
 import PageStyle from '../../static/json/defaultStyle/PageDefaultStyle';
-console.log('页面默认样式', PageStyle);
 
-var event = commonEvent.getEventInstance();
+//  parentSelect=".parent"
+const event = commonEvent.getEventInstance();
 const TypeMapStyle = {
     button: 'ButtonDefaultStyle.json',
     image: 'ImageDefaultStyle.json',
@@ -43,18 +44,45 @@ export default {
     name: 'phoneBox',
     data() {
         return {
-            pageId: ProId.getUniqueId(),
+          
+            pageId: 'a'+ProId.getUniqueId()+'z',
             items: [], //用来转载组件
-            style: PageStyle
+            style: {...PageStyle},
+            name:this.pageName,
+            isShowPage:true,
         };
     },
+    
+   
+    props:['pageName','currentPageNamePrp'],
     components: {
         standardTag,
         Menu
     },
-    mounted() {
+    watch:{
      
-        
+
+        currentPageNamePrp(newV){
+       
+            let ret=newV==this.name;
+      
+            this.isShowPage=ret;
+            if(ret){
+                this.style.display='flex';
+             
+            }else{
+              
+                this.style.display='none';
+         
+            }
+        }
+    },
+    destroyed(){
+      
+        console.log('页面-'+this.pageName+'-已经删除');
+    },
+    created(){
+        console.log('boxphone 创建成功',this.name );
         event.listonEvent(event.dragEndName, val => this.dragEnd(val));
         event.listonEvent(
             event.editStyleChangeName,
@@ -68,16 +96,40 @@ export default {
             }.bind(this)
         );
     },
+    mounted() {
+     
+        console.log('boxphone 挂载完成被执行 页面名称是',this.name );
+    
+    },
     methods: {
+
+
+        //打开是否删除的对话框，确定要删除执行函数 sucf
+        openCfmDialog(sucF) {
+            this.$confirm('确定要删除吗', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                if(sucF)
+                {
+                    sucF();
+                }
+             
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });          
+            });
+        },
+
         //**获得所有可移动的组件的位置信息 相对整个bodyd的坐标（left top width height z-index） */
         getAllChildPostion(){
-            let boxPhone = document.getElementById('boxPhone');
+            let boxPhone = document.getElementById(this.pageId);
      
-            let left = boxPhone.offsetLeft;
-            let top = boxPhone.offsetTop; 
-
-
-
+            let left = boxPhone.offsetLeft?boxPhone.offsetLeft:0;
+            let top = boxPhone.offsetTop?boxPhone.offsetTop:0; 
             let positionArry=new Map();
             for(let a in this.items){
                 console.log('子组件',this.$refs,this.$refs['child'+a],a);
@@ -151,10 +203,10 @@ export default {
         /**判断是否拖动到phone区域了
      *  @param pt 是鼠标坐标{x,y} */
         isInBoxPhone(pt) {
-            var boxPhone = document.getElementById('boxPhone');
-            var left = boxPhone.offsetLeft;
-            var top = boxPhone.offsetTop;
-
+            var boxPhone = document.getElementById(this.pageId);
+            var left = boxPhone.offsetLeft?boxPhone.offsetLeft:0;
+            var top = boxPhone.offsetTop?boxPhone.offsetTop:0;
+            console.log('手机页面-'+this.pageName+'-位置 left='+left+';top='+top+';w='+boxPhone.clientWidth+';h='+boxPhone.clientHeight);
             if (
                 pt.x >= left &&
         pt.x <= left + boxPhone.clientWidth &&
@@ -168,6 +220,11 @@ export default {
         },
 
         dragEnd(val) {
+            
+            if(event.currentPageName!==this.pageName)
+            {
+                return ;
+            }
             console.log('在手机屏幕上 拖动结束', {
                 ...val,
                 backgroundImage: val.ctrInfo.icon
@@ -194,6 +251,8 @@ export default {
                     height: H2,
                     type: val.ctrInfo.type
                 });
+            }else{
+                console.log('没有拖到手机盒子里');
             }
 
           
@@ -204,9 +263,9 @@ export default {
      * mousePoint {y:0,x:0} 鼠标点坐标 相当于整个可视区域的坐标
      */
         getFitTopLeft(conponentSize, mousePoint) {
-            let boxPhone = document.getElementById('boxPhone');
-            let left = boxPhone.offsetLeft;
-            let top = boxPhone.offsetTop;
+            let boxPhone = document.getElementById(this.pageId);
+            let left = boxPhone.offsetLeft?boxPhone.offsetLeft:0;
+            let top = boxPhone.offsetTop?boxPhone.offsetTop:0; 
             boxPhone.clientWidth;
             boxPhone.clientHeight;
 
@@ -236,6 +295,10 @@ export default {
 
         //***点击菜单响应事件 item{title:""},menuPoint 鼠标点击时的坐标可视区域坐标*/
         menuItemClick(item,menuPoint){
+            if(event.currentPageName!==this.pageName)
+            {
+                return ;
+            }
             console.log('菜单被点击',item);
             try {
                 
@@ -245,8 +308,15 @@ export default {
                 case '删除': 
                     let ret=  this.findChildUnderMenu(menuPoint);
                     if(ret){
-                        this.items.splice(ret[0],1);
-                        console.log('已删除的组件序号是',ret[0]);
+                        this.openCfmDialog(()=>{
+                            this.items.splice(ret[0],1);
+                            console.log('已删除的组件序号是',ret[0]);
+                            this.$message({
+                                type: '恭喜',
+                                message: '删除成功!'
+                            });
+                        });
+                      
                     }
                     else{
                         console.log('在菜单下没有可删除的组件');
@@ -284,4 +354,5 @@ export default {
    background-repeat:no-repeat;
    background-size: 100% auto; */
 }
+
 </style>

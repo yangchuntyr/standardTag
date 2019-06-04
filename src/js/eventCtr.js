@@ -31,6 +31,8 @@ var tem= function() {
             this.event.$emit(eventName,{...sendData});  
         };
 
+        this.currentPageName='';//当前页面名称
+
     }
     return {
 

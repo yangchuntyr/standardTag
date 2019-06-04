@@ -3,7 +3,9 @@
     <div class="head">头部</div>
     <div class="down">
       <div class="left">
-        <div class="leftTop">页面-左上</div>
+        <div class="leftTop">
+          <PageManage/>
+        </div>
         <div class="leftDown">
           <leftBlock></leftBlock>
         </div>
@@ -11,8 +13,8 @@
       </div>
 
       <div class="middle">
-        <div>(备注:此屏幕模拟的是iphone6s的屏幕大小 屏幕414*736)</div>
-        <phoneBox/>
+      
+        <mainPage/>
       </div>
       <div class="right">
         <editStyle></editStyle>
@@ -24,11 +26,11 @@
 </template>
 
 <script>
-import phoneBox from './components/phoneBox';
+
 import editStyle from './components/styleEdit';
 import leftBlock from './components/leftBlock';
-
-
+import PageManage from './components/pageMange';
+import mainPage  from './components/mainPage';
 export default {
     data(){
         return {
@@ -37,10 +39,11 @@ export default {
     },
     name: 'App',
     components: {
-        phoneBox,
+   
         editStyle,
         leftBlock,
-       
+        PageManage,
+        mainPage
     },
     methods:{
    
@@ -58,15 +61,19 @@ export default {
   height: 1080px;
 }
 
+
 .head{
 width: 100%;
-height: 100px;
+height: 77px;
 border: 1px solid lightgrey;
 }
-
+.middle{
+  width: 930px;
+}
 .down{
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
+  
 }
 
 .down>.left{

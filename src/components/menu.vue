@@ -80,6 +80,10 @@ export default {
  padding: 10px 20px;
  background-color: #ffffff;
 }
+
+ .row:hover{
+            background-color: #eeeeee;
+        }
 </style>
 
 

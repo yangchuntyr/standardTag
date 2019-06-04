@@ -1,5 +1,5 @@
 <template>
-  <div  :style="zStyle" >
+  <!-- <div  :style="zStyle" > 以后扩展什么的可能用得上  -->
     <VueDraggableResizable
       :style="defautlOhterStyle"
       :parent="parentSelect"
@@ -12,11 +12,11 @@
       @activated="onActivated"
       @deactivated="onDeactivated"
       @dragstop="onDragstop"
-      
+      :zIndex="zStyle.zIndex"
     >
       <label v-text="defautlOhterStyle&&defautlOhterStyle.text"></label>
     </VueDraggableResizable>
-  </div>
+  <!-- </div> -->
 </template>
 <script>
 import VueDraggableResizable from 'vue-draggable-resizable';
@@ -40,7 +40,7 @@ export default {
             required: true
         },
         pageIdProp: {
-            type: Number
+            type: String
         },
 
         parentSelect: {
@@ -84,7 +84,7 @@ export default {
     },
     created() {
     //这里判断是否加载背景图片
-        console.log('父亲那里过来的样式对象值', this.styleFromParent);
+   
         let style = { ...this.styleFromParent };
 
         switch (this.idData.type) {
@@ -166,7 +166,7 @@ export default {
 
             for (let a in styleJsonObj) {
                 if (posKeyName.indexOf(a) <= -1) {
-                    if (this.defautlOhterStyle.hasOwnProperty(a)) {
+                    if (a in this.defautlOhterStyle) {
                         this.defautlOhterStyle[a] = styleJsonObj[a];
                     } else {
                         this.$set(this.defautlOhterStyle, a, styleJsonObj[a]);
@@ -186,14 +186,16 @@ export default {
         saveStyleToJson() {
             var jsonVal = {
                 fileName:
-          this.idData.type + '_' + this.idData.id + '_' + this.idData.pageId, //预览组件时根据json文件名称可以判断这份配置的对象位置
+          this.idData.type + '_' + this.idData.id, //预览组件时根据json文件名称可以判断这份配置的对象位置
                 style: { ...this.getAllStyle() },
                 idData: { ...this.idData },
-                screenWidth: 414
+                     
                 //还要补充事件代码保存为json
                 //屏幕适配办法 涉及到的大小单位都是px 保存设计时的屏幕宽度 在预览或运行时 获取运行环境屏幕宽度，
                 //根据runScreenWidth/designScreenWidth*json配置里的组件宽度  就等于实际运行时的组件宽度
             };
+
+            
         },
 
         onDragstop() {
